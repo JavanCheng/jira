@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 // !!value 的意思是把一个值转化为 布尔值
 // 一个 ! 是对这个值求反,两个 !! 求反再求反
 export const isFalsy = (value) => (value === 0 ? false : !value);
@@ -20,4 +21,29 @@ export const cleanObject = (object) => {
     }
   });
   return result;
+};
+
+// 自定义 useMount hooks，在页面刚加载时执行一个回调函数
+export const useMount = (callback) => {
+  useEffect(() => {
+    callback();
+  }, []);
+};
+
+// 自定义 debounce
+export const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    // 每次在 value 变化以后，设置一个定时器
+    const timeout = setTimeout(() => setDebouncedValue(value), delay);
+    // 这里是一个闭包
+    // 每次在上一个 useEffect 处理完以后再运行
+    // useEffect的回调相当于 componentWillUnmount，所以会在组件将要卸载时执行
+    // value 改变会卸载上一个组件
+    return () => clearTimeout(timeout);
+    // delay 一般不会改变
+  }, [value, delay]);
+
+  return debouncedValue;
 };

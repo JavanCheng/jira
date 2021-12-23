@@ -2,7 +2,7 @@ import { SearchPanel } from "./search-panel"
 import { List } from "./list"
 import { useState, useEffect } from 'react'
 import * as qs from "qs" 
-import { cleanObject } from "utils"
+import { cleanObject, useDebounce, useMount } from "utils"
 
 const apiUrl = process.env.REACT_APP_API_URL
 
@@ -14,28 +14,28 @@ export const ProjectListScreen = () => {
         name: '',
         personId: ''
     });
-
+    const debouncedParam = useDebounce(param, 1000)
     const [list, setList] = useState([])
 
     // useEffect：第一个参数返回函数的回调相当于componentWillUnmount
     // 第二个参数这里是[params],表示监听params的内容
     // 当params发生改变时，调用一次回调
     useEffect(() => {
-        fetch(`${apiUrl}/projects?${qs.stringify(cleanObject(param))}`).then(async response => {
+        fetch(`${apiUrl}/projects?${qs.stringify(cleanObject(debouncedParam))}`).then(async response => {
           if (response.ok) {
             setList(await response.json())
           }
         })
-      }, [param])
+      }, [debouncedParam])
 
     // 初始化 users
-    useEffect(() => {
+    useMount(() => {
         fetch(`${apiUrl}/users`).then(async response => {
             if (response.ok) {
                 setUsers(await response.json())
             }
         })
-    }, [])
+    })
 
     return <div>
         <SearchPanel users={users} param={param} setParam={setParam} />
