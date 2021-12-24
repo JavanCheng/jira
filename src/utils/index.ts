@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 // !!value 的意思是把一个值转化为 布尔值
 // 一个 ! 是对这个值求反,两个 !! 求反再求反
-export const isFalsy = (value: any) => (value === 0 ? false : !value);
+export const isFalsy = (value: unknown) => (value === 0 ? false : !value);
 
 // 在一个函数里，改变传入对象本身是不好的
 export const cleanObject = (object: object) => {
@@ -33,7 +33,7 @@ export const useMount = (callback: () => void) => {
 };
 
 // 自定义 debounce
-export const useDebounce = (value: any, delay?: number) => {
+export const useDebounce = (value: unknown, delay?: number): any => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
