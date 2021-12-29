@@ -1,3 +1,4 @@
+import { Button, Form, Input } from "antd";
 import { useAuth } from "context/auth-context";
 import { FormEvent } from "react";
 
@@ -7,28 +8,29 @@ export const RegisterScreen = () => {
   const { register, user } = useAuth();
 
   // 这里不传 HTMLFormElement 也可以，FormEvent 源码里默认给了一个 Element 类型
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    // 阻止表单提交的默认行为
-    event.preventDefault();
-    // event.currentTarget.elements 包含了表单的 id，第一个元素就是 username
-    // as HTMLInputElement 是指定 username 为这个类型，可以使用 value 属性（默认类型 Element 没有 value 属性）
-    const username = (event.currentTarget.elements[0] as HTMLInputElement)
-      .value;
-    const password = (event.currentTarget.elements[1] as HTMLInputElement)
-      .value;
-    register({ username, password });
+  const handleSubmit = (values: { username: string; password: string }) => {
+    register(values);
   };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username">用户名</label>
-        <input type="text" id={"username"} />
-      </div>
-      <div>
-        <label htmlFor="password">密码</label>
-        <input type="password" id={"password"} />
-      </div>
-      <button type={"submit"}>注册</button>
-    </form>
+    <Form onFinish={handleSubmit}>
+      <Form.Item
+        name={"username"}
+        rules={[{ required: true, message: "请输入用户名" }]}
+      >
+        <Input placeholder={"用户名"} type="text" id={"username"} />
+      </Form.Item>
+      <Form.Item
+        name={"password"}
+        rules={[{ required: true, message: "请输入密码" }]}
+      >
+        <Input placeholder={"密码"} type="password" id={"password"} />
+      </Form.Item>
+      <Form.Item>
+        <Button htmlType={"submit"} type={"primary"}>
+          注册
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
