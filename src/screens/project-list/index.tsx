@@ -3,6 +3,7 @@ import { List } from "./list";
 import { useState, useEffect } from "react";
 import * as qs from "qs";
 import { cleanObject, useDebounce, useMount } from "utils";
+import { useHttp } from "utils/http";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -16,27 +17,18 @@ export const ProjectListScreen = () => {
   });
   const debouncedParam = useDebounce(param, 200);
   const [list, setList] = useState([]);
+  const client = useHttp();
 
   // useEffect：第一个参数返回函数的回调相当于componentWillUnmount
   // 第二个参数这里是[params],表示监听params的内容
   // 当params发生改变时，调用一次回调
   useEffect(() => {
-    fetch(
-      `${apiUrl}/projects?${qs.stringify(cleanObject(debouncedParam))}`
-    ).then(async (response) => {
-      if (response.ok) {
-        setList(await response.json());
-      }
-    });
+    client("projects", { data: cleanObject(debouncedParam) }).then(setList);
   }, [debouncedParam]);
 
   // 初始化 users
   useMount(() => {
-    fetch(`${apiUrl}/users`).then(async (response) => {
-      if (response.ok) {
-        setUsers(await response.json());
-      }
-    });
+    client("users").then(setUsers);
   });
 
   return (
