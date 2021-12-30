@@ -25,6 +25,7 @@ export const ProjectListScreen = () => {
   // 当params发生改变时，调用一次回调
   useEffect(() => {
     client("projects", { data: cleanObject(debouncedParam) }).then(setList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedParam]);
 
   // 初始化 users
