@@ -5,6 +5,8 @@ import { ProjectListScreen } from "screens/project-list";
 // 以 React 组件的形式渲染 SoftwareLogo
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import { Button, Dropdown, Menu } from "antd";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ProjectScreen } from "screens/project";
 
 /**
  * grid 和 flex 各自的应用场景
@@ -19,38 +21,49 @@ import { Button, Dropdown, Menu } from "antd";
  */
 
 export const AuthenticatedApp = () => {
+  return (
+    <Container>
+      <PageHeader />
+      <Main>
+        <Router>
+          <Routes>
+            <Route path={"/"} element={<ProjectListScreen />} />
+            <Route path={"/:projectId/*"} element={<ProjectScreen />} />
+          </Routes>
+        </Router>
+      </Main>
+    </Container>
+  );
+};
+
+const PageHeader = () => {
   const { logout, user } = useAuth();
 
   return (
-    <Container>
-      <Header between={true}>
-        <HeaderLeft gap={true}>
-          <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"} />
-          <h2>项目</h2>
-          <h2>用户</h2>
-        </HeaderLeft>
-        <HeaderRight>
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item key={"logout"}>
-                  <Button type={"link"} onClick={logout}>
-                    登出
-                  </Button>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <Button type={"link"} onClick={(e) => e.preventDefault()}>
-              Hi, {user?.name}
-            </Button>
-          </Dropdown>
-        </HeaderRight>
-      </Header>
-      <Main>
-        <ProjectListScreen />
-      </Main>
-    </Container>
+    <Header between={true}>
+      <HeaderLeft gap={true}>
+        <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"} />
+        <h2>项目</h2>
+        <h2>用户</h2>
+      </HeaderLeft>
+      <HeaderRight>
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item key={"logout"}>
+                <Button type={"link"} onClick={logout}>
+                  登出
+                </Button>
+              </Menu.Item>
+            </Menu>
+          }
+        >
+          <Button type={"link"} onClick={(e) => e.preventDefault()}>
+            Hi, {user?.name}
+          </Button>
+        </Dropdown>
+      </HeaderRight>
+    </Header>
   );
 };
 
