@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // !!value 的意思是把一个值转化为 布尔值
 // 一个 ! 是对这个值求反,两个 !! 求反再求反
 export const isFalsy = (value: unknown) => (value === 0 ? false : !value);
@@ -69,7 +69,9 @@ export const useArray = <T>(initialArray: T[]) => {
 };
 
 export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
-  const oldTitle = document.title;
+  const oldTitle = useRef(document.title).current;
+  // 页面加载时: 旧title
+  // 加载后：新title
 
   useEffect(() => {
     document.title = title;
@@ -78,8 +80,9 @@ export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
   useEffect(() => {
     return () => {
       if (!keepOnUnmount) {
+        // 如果不指定依赖，读到的就是旧title
         document.title = oldTitle;
       }
     };
-  }, []);
+  }, [keepOnUnmount, oldTitle]);
 };
