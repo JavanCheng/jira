@@ -34,7 +34,7 @@ export const AuthenticatedApp = () => {
               path={"/projects/:projectId/*"}
               element={<ProjectScreen />}
             />
-            {/* <Navigate to={"/projects"} /> */}
+            <Navigate to={"/projects"} />
           </Routes>
         </Router>
       </Main>
