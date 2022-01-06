@@ -1,6 +1,7 @@
 import qs from "qs";
 import * as auth from "auth-provider";
 import { useAuth } from "context/auth-context";
+import { useCallback } from "react";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -61,7 +62,10 @@ export const useHttp = () => {
   const { user } = useAuth();
   // 这里传入的参数和 http 传入的参数类型一致，所以使用 Parameters 可以不用再写一遍参数类型
   // return ([endpoint, config]: [string, Config]) => http(endpoint, {...config, token: user?.token})
-  return (...[endpoint, config]: Parameters<typeof http>) =>
-    http(endpoint, { ...config, token: user?.token });
+  return useCallback(
+    (...[endpoint, config]: Parameters<typeof http>) =>
+      http(endpoint, { ...config, token: user?.token }),
+    [user?.token]
+  );
   // ...[endpoint, config] 可以让我们在传参时不用以元组的形式传参，可以省略中括号
 };

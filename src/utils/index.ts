@@ -30,7 +30,6 @@ export const cleanObject = (object: { [key: string]: unknown }) => {
 export const useMount = (callback: () => void) => {
   useEffect(() => {
     callback();
-    // TODO 依赖项里加上callback会造成无限循环，这个和useCallback以及useMemo有关系
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };
@@ -105,4 +104,18 @@ export const subset = <
     keys.includes(key as K)
   );
   return Object.fromEntries(filteredEntries) as Pick<O, K>;
+};
+
+/**
+ * 返回组件的挂载状态，如果还没挂载或者已经卸载，返回false；反之，返回true
+ */
+export const useMountedRef = () => {
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  });
+  return mountedRef;
 };
